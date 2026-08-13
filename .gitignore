@@ -1,0 +1,15 @@
+# Visual Studio (SSIS, SSAS)
+.vs/
+*.user
+*.suo
+bin/
+obj/
+*.database
+*.cube
+
+# Python & Jupyter Notebooks
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+venv/
+env/
