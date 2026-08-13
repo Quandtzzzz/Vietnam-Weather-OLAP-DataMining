@@ -1,0 +1,82 @@
+﻿<DeploymentSnapshot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ddl2="http://schemas.microsoft.com/analysisservices/2003/engine/2" xmlns:ddl2_2="http://schemas.microsoft.com/analysisservices/2003/engine/2/2" xmlns:ddl100_100="http://schemas.microsoft.com/analysisservices/2008/engine/100/100" xmlns:ddl200="http://schemas.microsoft.com/analysisservices/2010/engine/200" xmlns:ddl200_200="http://schemas.microsoft.com/analysisservices/2010/engine/200/200" xmlns:ddl300="http://schemas.microsoft.com/analysisservices/2011/engine/300" xmlns:ddl300_300="http://schemas.microsoft.com/analysisservices/2011/engine/300/300" xmlns:ddl400="http://schemas.microsoft.com/analysisservices/2012/engine/400" xmlns:ddl400_400="http://schemas.microsoft.com/analysisservices/2012/engine/400/400" xmlns:ddl500="http://schemas.microsoft.com/analysisservices/2013/engine/500" xmlns:ddl500_500="http://schemas.microsoft.com/analysisservices/2013/engine/500/500" xmlns:dwd="http://schemas.microsoft.com/DataWarehouse/Designer/1.0">
+  <Target>
+    <Database>SSAS</Database>
+    <Server>localhost</Server>
+    <ConnectionString>Data Source=localhost;Timeout=0</ConnectionString>
+  </Target>
+  <Options>
+    <TransactionalDeployment>false</TransactionalDeployment>
+    <PartitionDeployment>DeployPartitions</PartitionDeployment>
+    <RoleDeployment>DeployRolesRetainMembers</RoleDeployment>
+    <ProcessingOption>Default</ProcessingOption>
+    <OutputScript></OutputScript>
+    <ImpactAnalysisFile></ImpactAnalysisFile>
+    <ConfigurationSettingsDeployment>Deploy</ConfigurationSettingsDeployment>
+    <OptimizationSettingsDeployment>Deploy</OptimizationSettingsDeployment>
+    <WriteBackTableCreation>UseExisting</WriteBackTableCreation>
+  </Options>
+  <Snapshot>
+    <ObjectSnapshots>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.RelationalDataSource</Type>
+        <TimeStamp>qmam65J2DpQZmvMOBODGXI+0Fss=11/11/2025 9:30:05 PM11/11/2025 9:30:04 PM</TimeStamp>
+        <ID>
+          <String>Weather DB</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.DataSourceView</Type>
+        <TimeStamp>JGIpdyWzOYqr0XqTSLmodEdLOY4=11/11/2025 10:06:25 PM11/11/2025 9:49:13 PM</TimeStamp>
+        <ID>
+          <String>Weather DB</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>0iCvgDZV3AM/sUFbP28i+owJCHU=11/12/2025 10:17:12 PM11/11/2025 10:06:25 PM</TimeStamp>
+        <ID>
+          <String>DIM DATE</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>OqLGMtSsZctMg6sTOC+onrejGcc=11/12/2025 11:24:26 PM11/11/2025 10:06:25 PM</TimeStamp>
+        <ID>
+          <String>DIM LOCATION</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>IfVyobFuQeTBrhCnpDrA8F6KGRg=11/11/2025 10:29:37 PM11/11/2025 10:06:25 PM</TimeStamp>
+        <ID>
+          <String>DIM STATUS</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>CRv3vPQqAAU8d1xikKUt8xxOCbU=11/11/2025 10:29:37 PM11/11/2025 10:06:25 PM</TimeStamp>
+        <ID>
+          <String>DIM WIND</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Cube</Type>
+        <TimeStamp>RvI8Ow2TYdo41RHPdmkuMD45u3M=12/11/2025 8:44:14 AM11/11/2025 10:06:25 PM/vnsqQeIsEXuacIYk9BZgZ2eFwY=11/12/2025 9:50:27 PM11/11/2025 10:06:25 PM</TimeStamp>
+        <ID>
+          <String>Weather DB</String>
+        </ID>
+      </ObjectSnapshot>
+    </ObjectSnapshots>
+    <DatabaseSnapshot>
+      <Type>Microsoft.AnalysisServices.Database</Type>
+      <TimeStamp>eVISfHwwaCPgFSipSDDLx5Tyu9w=11/5/2025 10:18:02 PM11/5/2025 10:18:02 PM</TimeStamp>
+      <ID>
+        <String>SSAS</String>
+      </ID>
+    </DatabaseSnapshot>
+    <Granularity>Coarse</Granularity>
+  </Snapshot>
+  <AssemblyLocations />
+  <ProcessingComplete>true</ProcessingComplete>
+  <LastDeployed>2025-12-11T01:44:20.733333Z</LastDeployed>
+</DeploymentSnapshot>
