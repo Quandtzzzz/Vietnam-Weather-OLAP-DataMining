@@ -1,0 +1,333 @@
+﻿//Câu truy vấn 1: liệt kê 10 tỉnh có lượng mưa trung bình cao nhất.
+
+SELECT
+[Measures].[Avg Rain] ON COLUMNS,
+      TOPCOUNT(
+        [DIM LOCATION].[PHANCAP_LOCATION].[Province].Members,
+          10,
+            ([Measures].[Avg Rain])
+    ) ON ROWS
+FROM [Weather DB]
+
+//Câu truy vấn 2: Lượng mưa trung bình theo từng miền (Region) trong năm 2020.
+SELECT 
+    {[Measures].[Avg Rain]} ON COLUMNS,
+    ORDER(
+        [DIM LOCATION].[Region].[Region].Members,
+        [Measures].[Avg Rain],
+        DESC
+    ) ON ROWS
+FROM [Weather DB]
+WHERE ([DIM DATE].[Year].&[2020]);
+
+//Câu truy vấn 3: Tổng lượng mưa theo từng quý và từng năm của tỉnh Đà Lạt.
+SELECT {[Measures].[Total Rain]} ON COLUMNS,
+    NON EMPTY
+    CROSSJOIN(
+        [DIM DATE].[Year].[Year].Members,
+        [DIM DATE].[Quarter].[Quarter].Members
+    ) ON ROWS
+FROM [Weather DB]
+WHERE ([DIM LOCATION].[Province].[Da Lat]);
+
+//Câu truy vấn 4: Hiển thị tổng số ngày có mưa của từng tỉnh trong năm 2011 của miền Bắc.
+WITH 
+MEMBER [Measures].[RainDays] AS
+    ([Measures].[WeatherCount], [DIM STATUS].[STATUS].&[Mua])
+
+SELECT 
+    {[Measures].[RainDays]} ON COLUMNS,
+    
+    NON EMPTY
+    CROSSJOIN(
+        [DIM LOCATION].[Region].[Region].Members,
+        [DIM LOCATION].[Subregion].[Subregion].Members,
+        [DIM LOCATION].[Province].[Province].Members 
+    ) ON ROWS
+
+FROM [Weather DB]
+WHERE ([DIM DATE].[Year].&[2011]);
+
+//câu 5 Hiển thị tỉ lệ của từng kiểu thời tiết từng tỉnh trong năm 2015.
+WITH 
+MEMBER [Measures].[WeatherRate] AS
+    IIF(
+        ([Measures].[WeatherCount]) = 0,
+        0,
+        ([Measures].[WeatherCount])
+        /
+        SUM(
+            [DIM STATUS].[STATUS].[STATUS].Members,
+            ([Measures].[WeatherCount])
+        )
+    ),
+    FORMAT_STRING = "Percent"
+
+SELECT
+{
+    [Measures].[WeatherRate]
+} ON COLUMNS,
+
+[DIM LOCATION].[Province].[Province].Members *
+[DIM STATUS].[STATUS].[STATUS].Members ON ROWS
+
+FROM [Weather DB]
+WHERE ([DIM DATE].[Year].&[2015]);
+
+//cau 6: Số ngày mưa theo tháng trong năm 2017 của tỉnh Quy Nhon.
+SELECT
+    { [Measures].[RainDays] } ON COLUMNS,
+
+    NON EMPTY
+    (
+        [DIM LOCATION].[Province].[Province].Members
+            *
+        [DIM DATE].[Month].[Month].Members
+    ) ON ROWS
+
+FROM [Weather DB]
+
+WHERE (
+    [DIM STATUS].[STATUS].[mua],      
+    [DIM DATE].[Year].&[2017],
+    [DIM LOCATION].[Region].&[mien bac]
+);
+
+//Câu truy vấn 7: Với các tỉnh theo từng hướng gió có tổng lượng mưa, số ngày mưa, và lượng mưa trùng bình mỗi ngày có mưa như thế nào trong vùng duyên hải nam trung bộ.
+WITH
+MEMBER [Measures].[AvgRainPerRainyDay] AS
+    IIF([Measures].[RainDays] = 0 OR ISEMPTY([Measures].[RainDays]),
+        NULL,
+        [Measures].[Total Rain] / [Measures].[RainDays]
+    )
+
+SELECT
+{
+    [Measures].[Total Rain],
+    [Measures].[RainDays],
+    [Measures].[AvgRainPerRainyDay]
+} ON COLUMNS,
+
+
+    [DIM LOCATION].[Province].[Province].Members * 
+    [DIM WIND].[Wind D].[Wind D].Members
+ ON ROWS
+
+FROM [Weather DB]
+
+WHERE ([DIM LOCATION].[subregion].[duyen hai nam trung bo]);
+
+
+//Câu truy vấn 8: Thống kê số ngày có bão của các tỉnh Qui Nhơn, Nha Trang, Bến Tre, Biên Hòa, Cà Mau, Uông Bí và  Yên Bái.
+SELECT
+{
+    [Measures].[RainDays]
+} ON COLUMNS,
+
+TOPCOUNT(
+{
+    [DIM LOCATION].[Province].[Province].[Nha Trang],
+    [DIM LOCATION].[Province].[Province].[Ben Tre],
+    [DIM LOCATION].[Province].[Province].[Bien Hoa],
+    [DIM LOCATION].[Province].[Province].[Ca Mau],
+    [DIM LOCATION].[Province].[Province].[Uong Bi],
+    [DIM LOCATION].[Province].[Province].[Yen Bai]
+}, 7, [Measures].[RainDays]
+) ON ROWS
+FROM [Weather DB];
+
+
+//Câu truy vấn 9: So sánh tỉ lệ ngày mưa giữa các tỉnh, và xác định những tỉnh có xu hướng giảm nhẹ tỉ lệ ngày mưa (bé hơn 10%) trong 2 năm 2020 và 2021.
+WITH
+-- Tỉ lệ ngày mưa năm 2020
+MEMBER [Measures].[RainRate2020] AS
+    ([Measures].[WeatherRate], [DIM DATE].[Year].&[2020], [DIM STATUS].[STATUS].&[Mua]),
+    FORMAT_STRING = "Percent"
+
+-- Tỉ lệ ngày mưa năm 2021
+MEMBER [Measures].[RainRate2021] AS
+    ([Measures].[WeatherRate], [DIM DATE].[Year].&[2021], [DIM STATUS].[STATUS].&[Mua]),
+    FORMAT_STRING = "Percent"
+
+-- Chênh lệch RainRate 2021 - 2020
+MEMBER [Measures].[RainRateChange] AS
+    [Measures].[RainRate2021] - [Measures].[RainRate2020],
+    FORMAT_STRING = "Percent"
+
+-- Kiểm tra xu hướng giảm nhẹ (<10%)
+MEMBER [Measures].[SlightDecrease] AS
+    IIF([Measures].[RainRateChange] < 0 
+        AND [Measures].[RainRateChange] > -0.1, 1, 0)
+
+SELECT
+{
+    [Measures].[RainRate2020],
+    [Measures].[RainRate2021],
+    [Measures].[RainRateChange]
+} ON COLUMNS,
+
+NON EMPTY
+FILTER(
+    [DIM LOCATION].[Province].[Province].Members,
+    [Measures].[SlightDecrease] = 1
+) ON ROWS
+
+FROM [Weather DB];
+
+//Câu truy vấn 10: Xác định, trong năm 2020, mỗi ngày có bao nhiêu tỉnh trong tổng số 40 tỉnh được ghi nhận có mưa.-- 
+WITH
+-- Số tỉnh có mưa trong ngày
+MEMBER [Measures].[ProvincesWithRain] AS
+    COUNT(
+        FILTER(
+            [DIM LOCATION].[Province].[Province].Members,
+            ([Measures].[WeatherCount], [DIM STATUS].[STATUS].&[Mua]) > 0
+        )
+    )
+
+SELECT
+{
+    [Measures].[ProvincesWithRain]
+} ON COLUMNS,
+
+
+[DIM DATE].[Quarter].[Quarter].Members *
+[DIM DATE].[Month].[Month].Members *
+[DIM DATE].[Day].[Day].Members ON ROWS
+
+FROM [Weather DB]
+Where [DIM DATE].[Year].&[2020]
+
+//Câu truy vấn 11: Trong nhóm 10 tỉnh có tổng lượng mưa cao nhất, tỉ lệ có mưa là bao nhiêu phần %.
+WITH
+-- Top 10 tỉnh có tổng lượng mưa cao nhất
+SET [Cau11] AS
+    TOPCOUNT(
+        [DIM LOCATION].[Province].[Province].Members,
+        10,
+        [Measures].[Total Rain]
+    )
+
+-- Tỉ lệ ngày mưa của từng tỉnh
+MEMBER [Measures].[RainRate_Percent] AS
+    ([Measures].[WeatherRate], [DIM STATUS].[STATUS].&[Mua]),
+    FORMAT_STRING = "Percent"
+
+SELECT
+{
+    [Measures].[Total Rain],
+    [Measures].[RainRate_Percent]
+} ON COLUMNS,
+
+[Cau11] ON ROWS
+
+FROM [Weather DB];
+
+//Câu truy vấn 12: Số ngày mưa trong từng tháng của tỉnh Buôn Mê Thuộc, đồng thời tính tổng cộng về cấp năm để so sánh.WITH
+MEMBER [Measures].[RainDaysYearTotal] AS
+    SUM(
+        [DIM DATE].[Year].CurrentMember,
+        [Measures].[RainDays]
+    )
+
+SELECT
+{
+    [Measures].[RainDays],
+    [Measures].[RainDaysYearTotal]
+} ON COLUMNS,
+
+/* Drill-down: Year × Quarter × Month */
+NON EMPTY
+(
+    [DIM DATE].[Year].[Year].Members
+  * [DIM DATE].[Quarter].[Quarter].Members
+  * [DIM DATE].[Month].[Month].Members
+) ON ROWS
+
+FROM [Weather DB]
+
+WHERE ([DIM LOCATION].[Province].[Buon Me Thuot]); /* Chỉ tính ngày có mưa */
+
+//Câu truy vấn 13: Top 10 hướng gió xuất hiện nhiều nhất trong năm 2014.
+WITH
+/* Đếm số ngày xuất hiện hướng gió — chỉ trong năm 2014 */
+MEMBER [Measures].[WindDirectionDayCount2014] AS
+    DISTINCTCOUNT(
+        (
+            [DIM DATE].[Date id].[Date id],
+            [DIM DATE].[Year].&[2014]
+        )
+    )
+
+/* Top 10 hướng gió năm 2014 */
+SET [Top10WindDirections2014] AS
+    TOPCOUNT(
+        [DIM WIND].[Wind D].[Wind D].Members,
+        10,
+        [Measures].[WindDirectionDayCount2014]
+    )
+
+SELECT
+{
+    [Measures].[WindDirectionDayCount2014]
+} ON COLUMNS,
+
+[Top10WindDirections2014] ON ROWS
+
+FROM [Weather DB]
+
+
+
+
+//Câu truy vấn 14: Lọc các tỉnh có lương mưa trung bình lớn hơn 7mm.
+
+WITH
+-- Tập hợp các tỉnh có lượng mưa trung bình > 2000
+SET [HighAvgRainProvinces] AS
+    FILTER(
+        [DIM LOCATION].[Province].[Province].Members,
+        [Measures].[Avg Rain] > 7
+    )
+
+SELECT
+{
+    [Measures].[Avg Rain]
+} ON COLUMNS,
+
+[HighAvgRainProvinces] ON ROWS
+
+FROM [Weather DB];
+
+//Câu truy vHiển thị nhiệt độ ghi nhận cao nhất, nhiệt độ thấp nhấp và nhiệt độ trung bình của từng tỉnh thành khu vực miền trong năm 2021
+
+WITH
+-- Đo lường Max, Min, Avg Temp
+MEMBER [Measures].[MaxTemp2021] AS
+    MAX(
+        [DIM DATE].[Date id].[Date id].Members,
+        ([Measures].[max temp], [DIM DATE].[Year].[2021])
+    )
+
+MEMBER [Measures].[MinTemp2021] AS
+    MIN(
+        [DIM DATE].[Date id].[Date id].Members,
+        ([Measures].[min temp], [DIM DATE].[Year].[2021])
+    )
+
+MEMBER [Measures].[AvgTemp2021] AS
+    ([Measures].[Avg temp], [DIM DATE].[Year].[2021])
+    / 
+    ([Measures].[WeatherCount], [DIM DATE].[Year].[2021])
+
+
+SELECT
+{
+    [Measures].[MaxTemp2021],
+    [Measures].[MinTemp2021],
+    [Measures].[AvgTemp2021]
+} ON COLUMNS,
+
+[DIM LOCATION].[Province].[Province].Members ON ROWS
+
+FROM [Weather DB]
+WHERE ([DIM LOCATION].[Region].&[mien nam]);
