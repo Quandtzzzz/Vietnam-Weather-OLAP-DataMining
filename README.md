@@ -1,84 +1,57 @@
-# Vietnam Weather Data Warehouse & Rainfall Forecasting
+# 🌦️ Decoding Vietnam's Climate: An End-to-End Data Warehouse & Machine Learning Project
 
-A data engineering and analytics team project that builds an end-to-end pipeline for Vietnam's weather data to support climate research. It addresses the challenges of fragmented meteorological data by turning raw historical records into multidimensional dashboards and rainfall forecasting models.
+Vietnam's climate is incredibly diverse and increasingly unpredictable[cite: 4]. As data engineering students, we wanted to go beyond simple spreadsheets and build a robust, scalable architecture to process and analyze 12 years of meteorological data across 40 provinces[cite: 4]. 
 
-## Overview
+This repository contains our complete journey: from designing a centralized Data Warehouse and writing complex multidimensional queries, to building interactive dashboards and training machine learning models to forecast rainfall[cite: 4].
 
-The project proposes a comprehensive data warehouse and machine learning workflow for meteorological analysis. Instead of analyzing flat CSV files manually, the team extracted historical weather data, designed an automated ETL pipeline, built an OLAP cube, visualized regional climate trends, and demonstrated how machine learning can predict rainfall patterns.
+## 🎯 The Challenge
+Meteorological data is naturally noisy, highly seasonal, and spatially complex. Working with the raw dataset (over 181,000 daily records from 2009 to 2021) presented several challenges[cite: 4]:
+* **Fragmentation:** Data needed heavy cleaning, deduplication, and restructuring into a format optimized for fast analytical queries[cite: 4].
+* **Multidimensionality:** Tracking climate changes requires slicing data by time (Year/Quarter/Month) and geography (Region/Subregion/Province) simultaneously[cite: 4].
+* **Non-linear Patterns:** Rainfall is notoriously hard to predict using simple linear methods due to the complex interplay of humidity, pressure, and wind[cite: 4].
 
-The core analytical problem centers on the difficulty of tracking and predicting climate variations, which can cause:
-* lack of visibility into regional temperature and humidity correlations;
-* difficulties in analyzing long-term wind and weather state patterns;
-* challenges in forecasting heavy rainfall and extreme weather events;
-* weak coordination in preparing data for scalable machine learning models.
+## 🚀 Our Journey (The Technical Pipeline)
 
-## Objectives
+### 1. Building the Single Source of Truth (ETL & Data Warehousing)
+Instead of querying flat files, we designed a **Star Schema** Data Warehouse in SQL Server[cite: 4]. We built an automated ETL pipeline using **SSIS** to extract the raw CSVs, apply transformations (Derived Columns for time extraction, Sorting to remove duplicates), and load the clean data into a centralized `FACT_WEATHER` table surrounded by 4 dimensions[cite: 4].
 
-* Analyze historical weather data across 40 provinces in Vietnam.
-* Build an automated ETL pipeline to clean and load data into a Star Schema.
-* Develop an OLAP cube and MDX queries for multidimensional climate analysis.
-* Build and compare machine-learning models to forecast total rainfall.
-* Demonstrate weather trends through interactive Power BI and Looker Studio dashboards.
+### 2. Slicing and Dicing the Data (OLAP)
+To answer complex business questions quickly, we constructed an OLAP Cube using **SSAS**[cite: 4]. By defining hierarchies (e.g., Region -> Subregion -> Province) and writing 15 advanced **MDX queries**, we could easily track anomalies, such as which provinces experienced a decrease in rainy days between 2020 and 2021, or the dominant wind directions during peak monsoon seasons[cite: 4].
 
-## Scope
+### 3. Visual Storytelling (Business Intelligence)
+We connected our OLAP cube to **Power BI** and **Looker Studio** to bring the numbers to life[cite: 4]. Our dashboards provide visual insights into:
+* Regional rainfall distribution using Sankey diagrams (highlighting Central Vietnam as the peak rainfall region)[cite: 4].
+* The inverse correlation between temperature and humidity through scatter plots and heatmaps[cite: 4].
+* Historical temperature trends spanning over a decade[cite: 4].
 
-* **Analytical scope:** Temperature, Rainfall, Wind, Humidity, and Weather Status.
-* **Data scope:** 181,980 daily weather records from 2009-2021.
-* **Technical scope:** SSIS-based ETL, SSAS cubes, Python forecasting notebooks, and BI dashboard design.
+### 4. Predicting the Unpredictable (Machine Learning)
+We didn't stop at historical reporting. We exported our processed data into Python to predict total monthly rainfall[cite: 4]. After handling the right-skewed distribution and engineering time-lag features (`rain_lag12`), we tested several tree-based ensemble models[cite: 4]. 
 
-## Analytical workflow
+**Model Performance on Test Set:**
 
-Raw weather data -> ETL pipeline (SSIS) -> Star Schema Data Warehouse
-                                        -> OLAP Cube (SSAS) -> MDX Queries -> BI Dashboards
-                                        -> Feature Engineering -> Model comparison -> Rainfall Forecast
+| Algorithm | R² Score | RMSE |
+| :--- | :--- | :--- |
+| Random Forest | 68.22% | 2,839.32 |
+| LightGBM | 67.54% | 2,869.92 |
+| **CatBoost (Winner)** | **69.91%** | **2,762.88** |
 
-The project compares standard OLAP multidimensional analysis with predictive machine learning. The BI prototype focuses on providing visual decision support for climate monitoring, while the ML models attempt to capture complex, non-linear weather patterns.
+*CatBoost proved to be the most resilient model in capturing the non-linear, highly seasonal nature of Vietnam's rainfall[cite: 4].*
 
-## Data and results
+## 📁 Repository Structure
+To make navigation easy, the project is organized into modular phases:
+* `1_SSIS_ETL/`: Visual Studio solution containing the Data Flow tasks and connection managers[cite: 4].
+* `2_SSAS_Cube/`: The OLAP cube design, dimension structures, and the `.mdx` query scripts[cite: 4].
+* `3_Dashboards/`: Visual reports and dashboard files (`.pbix` and PDFs)[cite: 4].
+* `4_Data_Mining/`: Jupyter notebooks detailing the EDA, feature engineering, and model training processes[cite: 4].
+* `Dataset/`: The starting point (raw meteorological data)[cite: 4].
 
-* 181,980 weather records with 21 attributes.
-* Baselines: Random Forest, LightGBM.
-* Main model: CatBoost.
-* Best reported model:
+## 💻 Tech Stack
+* **Storage & Processing:** SQL Server, SQL Server Integration Services (SSIS), SQL Server Analysis Services (SSAS)[cite: 4].
+* **Analytics & Visualization:** MDX, Power BI, Looker Studio[cite: 4].
+* **Data Science:** Python, Pandas, Scikit-learn, LightGBM, CatBoost[cite: 4].
 
-| Model | R² | RMSE | MAPE |
-| :--- | :--- | :--- | :--- |
-| CatBoost | 69.91% | 2,762.88 | 59.76% |
+## 👥 The Team
+* **Võ Hồ Trung Quân** - Data Engineer / Data Analyst
+* **Trần Đình Trung Hiếu** - Data Engineer / Data Analyst
 
-*Metrics are team experiment results on the project's prepared dataset.*
-
-## BI prototype
-
-Dashboard results support:
-* monitoring average rainfall and temperature across different regions;
-* analyzing the inverse correlation between temperature and humidity;
-* tracking the frequency of specific wind directions and weather states;
-* visual comparisons using Sankey diagrams, Heatmaps, and Time Series.
-
-Main demo features include cross-filtering by province/year, geographical rainfall distribution, and macro-trend analysis from 2009 to 2021.
-
-## Repository guide
-
-* `1_SSIS_ETL/`: ETL packages and data flow tasks.
-* `2_SSAS_Cube/`: Cube design, hierarchies, and MDX queries.
-* `3_Dashboards/`: Power BI (`.pbix`) and Looker Studio reports.
-* `4_Data_Mining/`: EDA, forecasting, and model evaluation notebooks.
-* `Dataset/`: Input-data note.
-
-## Tech stack
-
-SQL Server, SSIS, SSAS, Power BI, Looker Studio, Python, pandas, LightGBM, Random Forest, CatBoost.
-
-## Team
-
-* Võ Hồ Trung Quân - Data Engineer / Data Analyst
-* Trần Đình Trung Hiếu - Data Engineer / Data Analyst
-
-*Built for the Data Warehouse and OLAP course.*
-
-## Future improvements
-
-* Automate the data pipeline to fetch real-time weather APIs instead of static CSVs.
-* Extend forecasting to include extreme weather event classification (e.g., storms).
-* Explore additional deep learning models for more complex spatio-temporal weather patterns.
-* 
+*This project was developed as a capstone for the Data Warehouse and OLAP course at the University of Information Technology (UIT).*
