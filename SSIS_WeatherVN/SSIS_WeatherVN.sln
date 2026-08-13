@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{C9674DCB-5085-4A16-B785-4C70DD1589BD}") = "SSIS_WeatherVN", "SSIS_WeatherVN.dtproj", "{6FCAE2DB-9AE0-94F6-786A-DF8B5943A0B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FCAE2DB-9AE0-94F6-786A-DF8B5943A0B8}.Development|Default.ActiveCfg = Development
+		{6FCAE2DB-9AE0-94F6-786A-DF8B5943A0B8}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0EE32D6D-6EAA-4592-9B48-4BE1C96F24DA}
+	EndGlobalSection
+EndGlobal
