@@ -1,16 +1,16 @@
-# 🌦️ Decoding Vietnam's Climate: An End-to-End Data Warehouse & Machine Learning Project
+# Decoding Vietnam's Climate: An End-to-End Data Warehouse & Machine Learning Project
 
 Vietnam's climate is incredibly diverse and increasingly unpredictable[cite: 4]. As data engineering students, we wanted to go beyond simple spreadsheets and build a robust, scalable architecture to process and analyze 12 years of meteorological data across 40 provinces[cite: 4]. 
 
 This repository contains our complete journey: from designing a centralized Data Warehouse and writing complex multidimensional queries, to building interactive dashboards and training machine learning models to forecast rainfall[cite: 4].
 
-## 🎯 The Challenge
+## The Challenge
 Meteorological data is naturally noisy, highly seasonal, and spatially complex. Working with the raw dataset (over 181,000 daily records from 2009 to 2021) presented several challenges[cite: 4]:
 * **Fragmentation:** Data needed heavy cleaning, deduplication, and restructuring into a format optimized for fast analytical queries[cite: 4].
 * **Multidimensionality:** Tracking climate changes requires slicing data by time (Year/Quarter/Month) and geography (Region/Subregion/Province) simultaneously[cite: 4].
 * **Non-linear Patterns:** Rainfall is notoriously hard to predict using simple linear methods due to the complex interplay of humidity, pressure, and wind[cite: 4].
 
-## 🚀 Our Journey (The Technical Pipeline)
+## Our Journey (The Technical Pipeline)
 
 ### 1. Building the Single Source of Truth (ETL & Data Warehousing)
 Instead of querying flat files, we designed a **Star Schema** Data Warehouse in SQL Server[cite: 4]. We built an automated ETL pipeline using **SSIS** to extract the raw CSVs, apply transformations (Derived Columns for time extraction, Sorting to remove duplicates), and load the clean data into a centralized `FACT_WEATHER` table surrounded by 4 dimensions[cite: 4].
@@ -37,7 +37,7 @@ We didn't stop at historical reporting. We exported our processed data into Pyth
 
 *CatBoost proved to be the most resilient model in capturing the non-linear, highly seasonal nature of Vietnam's rainfall[cite: 4].*
 
-## 📁 Repository Structure
+## Repository Structure
 To make navigation easy, the project is organized into modular phases:
 * `1_SSIS_ETL/`: Visual Studio solution containing the Data Flow tasks and connection managers[cite: 4].
 * `2_SSAS_Cube/`: The OLAP cube design, dimension structures, and the `.mdx` query scripts[cite: 4].
@@ -45,12 +45,12 @@ To make navigation easy, the project is organized into modular phases:
 * `4_Data_Mining/`: Jupyter notebooks detailing the EDA, feature engineering, and model training processes[cite: 4].
 * `Dataset/`: The starting point (raw meteorological data)[cite: 4].
 
-## 💻 Tech Stack
+## Tech Stack
 * **Storage & Processing:** SQL Server, SQL Server Integration Services (SSIS), SQL Server Analysis Services (SSAS)[cite: 4].
 * **Analytics & Visualization:** MDX, Power BI, Looker Studio[cite: 4].
 * **Data Science:** Python, Pandas, Scikit-learn, LightGBM, CatBoost[cite: 4].
 
-## 👥 The Team
+## The Team
 * **Võ Hồ Trung Quân** - Data Engineer / Data Analyst
 * **Trần Đình Trung Hiếu** - Data Engineer / Data Analyst
 
